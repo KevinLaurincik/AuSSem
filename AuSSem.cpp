@@ -216,7 +216,8 @@ void emplaceHierarchy() {
 		cout << "Stlač 1 ak sa chceš presunúť na otca." << endl;
 		cout << "Stlač 2 ak sa chceš presunúť na konkrétneho syna." << endl;
 		cout << "Stlač 3 ak chceš použiť prehľadávacie algoritmy na synov." << endl;
-		cout << "Stlač 4 ak chceš skončíť.";
+		cout << "Stlač 4 ak chceš overit typ uzemnej jednotky" << endl;
+		cout << "Stlač 5 ak chceš skončíť.";
 		cout << endl;
 
 		cin >> userInput;
@@ -297,7 +298,59 @@ void emplaceHierarchy() {
 				cout << "Nezadali ste 1 alebo 2!" << endl;
 			}
 		}
-		else if(userInput == 4)
+		else if (userInput == 4)
+		{
+			cout << "Napis jedno z uvedených: štát, kraj, okres, obec. Takto zistíš či sa na tejto pozícií v hierarchií aktuálne nachádzaš" << endl;
+			cin >> userStringInput;
+			if (userStringInput == "štát")
+			{
+				if (hierarchy->level(actualPosition) == 0)
+				{
+					cout << "Áno, ste práve na štáte!" << endl; 
+				}
+				else
+				{
+					cout << "Nie, nie ste práve na štáte!" << endl;
+				}
+			}
+			else if(userStringInput == "kraj")
+			{
+				if (hierarchy->level(actualPosition) == 1)
+				{
+					cout << "Áno, ste práve na kraji!" << endl;
+				}
+				else
+				{
+					cout << "Nie, nie ste práve na kraji!" << endl;
+				}
+			}
+			else if (userStringInput == "okres")
+			{
+				if (hierarchy->level(actualPosition) == 2)
+				{
+					cout << "Áno, ste práve na okrese!" << endl;
+				}
+				else
+				{
+					cout << "Nie, nie ste práve na okrese!" << endl;
+				}
+			}
+			else if (userStringInput == "obec")
+			{
+				if (hierarchy->level(actualPosition) == 3)
+				{
+					cout << "Áno, ste práve na obci" << endl;
+				}
+				else
+				{
+					cout << "Nie, nie ste práve na obci!" << endl;
+				}
+			}
+			else {
+				cout << "Nezadali ste správny string!" << endl;
+			}
+		}
+		else if(userInput == 5)
 		{
 			exit(1);
 		}
