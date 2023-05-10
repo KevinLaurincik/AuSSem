@@ -3,11 +3,12 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <Windows.h>
 #include <cstdio>
 #include "libds/amt/explicit_hierarchy.h"
+#include "libds/adt/table.h"
 #include "AuSSem.h"
 #include <cstdlib>
+#include <Windows.h>
 
 
 using namespace std;
@@ -33,6 +34,7 @@ void startWithStr(string userInput, string nazorSuboru) {
 			content.push_back(row);
 		}
 	}
+	file.close();
 
 	for (int i = 1; i < content.size(); i++)
 	{
@@ -73,6 +75,7 @@ void containsStr(string userInput, string nazorSuboru) {
 			content.push_back(row);
 		}
 	}
+	file.close();
 
 	for (int i = 1; i < content.size(); i++)
 	{
@@ -123,6 +126,7 @@ void emplaceHierarchy() {
 			contentKraje.push_back(row);
 		}
 	}
+	file.close();
 
 	std::fstream file2("okresy.csv");
 	if (file2.is_open())
@@ -139,6 +143,7 @@ void emplaceHierarchy() {
 			contentOkresy.push_back(row);
 		}
 	}
+	file2.close();
 
 	int z = 0;
 	std::fstream file3("obce.csv");
@@ -157,13 +162,14 @@ void emplaceHierarchy() {
 			
 		}
 	}
+	file3.close();
 
 	int premenna1 = 0;
 	
 	for ( auto &data : contentKraje)
 	{
 		hierarchy->emplaceSon(root, premenna1).data_ = contentKraje[premenna1];
-		cout << hierarchy->accessSon(root, premenna1)->data_[2] << endl;
+		//cout << hierarchy->accessSon(root, premenna1)->data_[2] << endl;
 
 		int premenna2 = 0;
 		int poradieOkresSyn = 0;
@@ -176,14 +182,14 @@ void emplaceHierarchy() {
 			if (contentOkresy[premenna2][1].find(contentKraje[premenna1][5].substr(contentKraje[premenna1][5].length() - 5)) != std::string::npos)
 			{
 				hierarchy->emplaceSon(*hierarchy->accessSon(*hierarchy->accessRoot(), premenna1), poradieOkresSyn).data_ = contentOkresy[premenna2];
-				cout << "\t" << hierarchy->accessSon(*hierarchy->accessSon(root, premenna1), poradieOkresSyn)->data_[2] << endl;
+				//cout << "\t" << hierarchy->accessSon(*hierarchy->accessSon(root, premenna1), poradieOkresSyn)->data_[2] << endl;
 
 				for(auto &data3 : contentObce)
 				{
 					if (contentObce[premenna3][1].find(contentOkresy[premenna2][1]) != std::string::npos)
 					{
 						hierarchy->emplaceSon(*hierarchy->accessSon(*hierarchy->accessSon(root, premenna1), poradieOkresSyn), poradieObecSyn).data_ = contentObce[premenna3];
-						cout << "\t\t" << hierarchy->accessSon(*hierarchy->accessSon(*hierarchy->accessSon(root, premenna1), poradieOkresSyn), poradieObecSyn)->data_[2] << endl;
+						//cout << "\t\t" << hierarchy->accessSon(*hierarchy->accessSon(*hierarchy->accessSon(root, premenna1), poradieOkresSyn), poradieObecSyn)->data_[2] << endl;
 						poradieObecSyn++;
 					}
 					premenna3++;
@@ -231,7 +237,14 @@ void emplaceHierarchy() {
 			else
 			{
 				actualPosition = *hierarchy->accessParent(actualPosition);
-				cout << "Nachádzaš sa na: " << actualPosition.data_[2] << endl;
+				if (hierarchy->level(actualPosition) == 0)
+				{
+					cout << "Nachádzaš sa na: " << actualPosition.data_[0] << endl;
+				}
+				else
+				{
+					cout << "Nachádzaš sa na: " << actualPosition.data_[2] << endl;
+				}
 			}
 		}
 		else if (userInput == 2)
@@ -353,11 +366,222 @@ void emplaceHierarchy() {
 		else if(userInput == 5)
 		{
 			exit(1);
+			delete& hierarchy;
+		}
+	}
+	delete &hierarchy;
+}
+
+void emplaceTreap() {
+	vector<vector<string>> contentKraje;
+	vector<vector<string>> contentOkresy;
+	vector<vector<string>> contentObce;
+	vector<string> row;
+	string line;
+	string word;
+
+	std::fstream file("kraje.csv");
+
+	if (file.is_open())
+	{
+		getline(file, line); //aby sa preskocil prvy riadok
+		while (getline(file, line))
+		{
+			row.clear();
+
+			stringstream str(line);
+
+			while (getline(str, word, ';'))
+				row.push_back(word);
+			contentKraje.push_back(row);
+		}
+	}
+	file.close();
+
+	std::fstream file2("okresy.csv");
+	if (file2.is_open())
+	{
+		getline(file2, line);
+		while (getline(file2, line))
+		{
+			row.clear();
+
+			stringstream str(line);
+
+			while (getline(str, word, ';'))
+				row.push_back(word);
+			contentOkresy.push_back(row);
+		}
+	}
+	file2.close();
+
+	int z = 0;
+	std::fstream file3("obce.csv");
+	if (file3.is_open())
+	{
+		getline(file3, line);
+		while (getline(file3, line))
+		{
+			row.clear();
+
+			stringstream str(line);
+
+			while (getline(str, word, ';'))
+				row.push_back(word);
+			contentObce.push_back(row);
+
+		}
+	}
+	file3.close();
+
+	auto tabulkaKraje = std::make_unique<ds::adt::Treap<string ,vector<string>>>();
+	auto tabulkaOkresy = std::make_unique<ds::adt::Treap<string, vector<string>>>();
+	auto tabulkaObce = std::make_unique<ds::adt::Treap<string, vector<string>>>();
+
+	int riadok = 0;
+	for (auto &kraj : contentKraje)
+	{
+		tabulkaKraje->insert(contentKraje[riadok][2], contentKraje[riadok]);
+		cout << tabulkaKraje->find(contentKraje[riadok][2])[2] << endl;
+		riadok++;
+	}
+
+	riadok = 0;
+	for (auto &okres : contentOkresy)
+	{
+		vector<string> *duplicity;
+		duplicity = &contentOkresy[riadok];
+		if (tabulkaOkresy->tryFind(contentOkresy[riadok][3], duplicity))
+		{
+			vector<string> duplicityList;
+			vector<string> oldRecord = tabulkaOkresy->find(contentOkresy[riadok][3]);
+			for (int i = 0; i < oldRecord.size(); i++)
+			{
+				duplicityList.push_back(oldRecord[i]);
+			}
+			duplicityList.emplace_back("\t");
+			for (int i = 0; i < contentOkresy[riadok].size(); i++)
+			{
+				duplicityList.push_back(contentOkresy[riadok][i]);
+			}
+			duplicityList.emplace_back("\t");
+
+			tabulkaOkresy->remove(contentOkresy[riadok][3]);
+
+			tabulkaOkresy->insert(duplicityList[3], duplicityList);
+		}
+		else
+		{
+			tabulkaOkresy->insert(contentOkresy[riadok][3], contentOkresy[riadok]);
+		}
+		cout << tabulkaOkresy->find(contentOkresy[riadok][3])[3] << endl;
+		riadok++;
+	}
+
+	riadok = 0;
+	for (auto &obec : contentObce)
+	{
+		vector<string> *duplicity;
+		duplicity = &contentObce[riadok];
+		
+		if (tabulkaObce->tryFind(contentObce[riadok][2], duplicity))
+		{
+			vector<string> duplicityList;
+			vector<string> oldRecord = tabulkaObce->find(contentObce[riadok][2]);
+			for (int i = 0; i < oldRecord.size(); i++)
+			{
+				duplicityList.push_back(oldRecord[i]);
+			}
+			duplicityList.emplace_back("\t");
+			for (int i = 0; i < contentObce[riadok].size(); i++)
+			{
+				duplicityList.push_back(contentObce[riadok][i]);
+			}
+			duplicityList.emplace_back("\t");
+
+			tabulkaObce->remove(contentObce[riadok][2]);
+
+			tabulkaObce->insert(duplicityList[2], duplicityList);
+		}
+		else
+		{
+			tabulkaObce->insert(contentObce[riadok][2], contentObce[riadok]);
+		}
+
+		cout << tabulkaObce->find(contentObce[riadok][2])[2] << endl;
+		riadok++;
+	}
+	
+	while (true)
+	{
+		cout << endl;
+		cout << "Ak chcete prehľadávať kraje stlačte 1" << endl;
+		cout << "Ak chcete prehľadávať okresy stlačte 2" << endl;
+		cout << "Ak chcete prehľadávať obce stlačte 3" << endl;
+		cout << "Ak chcete ukončiť aplikáciu stlačte 4" << endl;
+		cout << endl;
+
+		int userInput;
+		while (!(cin >> userInput))
+		{
+			cout << "Nezadali ste číslo. Prosim zadajte znovu číslo: " << endl;
+			cin.clear();
+			cin.ignore(123, '\n');
+		}
+
+		cout << "Zadali ste číslo: " << userInput << endl;
+
+		if (userInput == 1)
+		{
+			cout << "Zadajte kľúč ktorý chcete vyhľadať: " << endl;
+			string stringUserInput;
+			cin.ignore();
+			getline(cin, stringUserInput);
+			cout << "Nájdené kraje: " << endl << "\n";
+			cout << tabulkaKraje->find(stringUserInput)[2] << endl;
+			for (int i = 0; i < tabulkaKraje->find(stringUserInput).size(); i++)
+			{
+				cout << tabulkaKraje->find(stringUserInput)[i] << " ";
+			}
+			cout << endl;
+		}
+		else if (userInput == 2)
+		{
+			cout << "Zadajte kľúč ktorý chcete vyhľadať: " << endl;
+			string stringUserInput;
+			cin.ignore();
+			getline(cin, stringUserInput);
+			cout << "Nájdené okresy: " << endl << "\n";
+			for (int i = 0; i < tabulkaOkresy->find(stringUserInput).size(); i++)
+			{
+				cout << tabulkaOkresy->find(stringUserInput)[i] << " ";
+			}
+			cout << endl;
+		}
+		else if (userInput == 3)
+		{
+			cout << "Zadajte kľúč ktorý chcete vyhľadať: " << endl;
+			string stringUserInput;
+			cin.ignore();
+			getline(cin, stringUserInput);
+			cout << "Nájdené obce: " << endl << "\n";
+			for (int i = 0; i < tabulkaObce->find(stringUserInput).size(); i++)
+			{
+				cout << tabulkaObce->find(stringUserInput)[i] << " ";
+			}
+			cout << endl;
+		}
+		else if (userInput == 4)
+		{
+			exit(1);
+		}
+		else
+		{
+			cout << "Nesprávne ste zadali volbu!" << endl;
 		}
 	}
 	
 }
-
 
 
 int main()
@@ -377,9 +601,10 @@ int main()
 
 
 
- 	cout << "Stlačte 1 ak chcete prehladávať pomocou startWithStr" << endl;
-	cout << "Stlačte 2 ak chcete prehladávať pomocou containsStr" << endl;
-	emplaceHierarchy();
+ 	//cout << "Stlačte 1 ak chcete prehladávať pomocou startWithStr" << endl;
+	//cout << "Stlačte 2 ak chcete prehladávať pomocou containsStr" << endl;
+	//emplaceHierarchy();
+	emplaceTreap();
 	//dorob check na to aby slo dat iba 1 alebo 2 
 	while (!(cin >> userInput))
 	{

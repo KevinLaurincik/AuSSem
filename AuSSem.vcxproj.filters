@@ -18,14 +18,8 @@
     <ClCompile Include="AuSSem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AuSSem.h">
       <Filter>Header Files</Filter>
     </ClInclude>

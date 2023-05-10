@@ -130,11 +130,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AuSSem.cpp" />
-    <ClCompile Include="FileReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AuSSem.h" />
-    <ClInclude Include="FileReader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
