@@ -95,6 +95,76 @@ void containsStr(string userInput, string nazorSuboru) {
 	}
 }
 
+void quickSort(vector<string>& param, std::function<bool(const string&, const string&)> compare, size_t min, size_t max) {
+	string pivot = param.at(min + (max - min) / 2);
+	int left = min;
+	int right = max;
+	do
+	{
+		while (compare(param.at(left), pivot))
+		{
+			left++;
+		}
+		while (right > 0 && compare(pivot, param.at(right)))
+		{
+			right--;
+		}
+		if (left <= right)
+		{
+			std::swap(param.at(left), param.at(right));
+			left++;
+			if (right > 0) {
+				right--;
+			}
+		}
+	} while (left <= right);
+
+	if (min < right)
+	{
+		quickSort(param, compare, min, right);
+	}
+	if (left < max)
+	{
+		quickSort(param, compare, left, max);
+	}
+}
+
+void sort(vector<string> &param, std::function<bool(const string&, const string&)> compare) {
+	if (!param.empty())
+	{
+		quickSort(param, compare, 0, param.size() - 1);
+	}
+}
+
+
+
+bool compareAlphabetical(const string &param1, const string& param2) {
+	return param1 < param2;
+}
+
+bool compareVowelsCount(const string& param1, const string& param2) {
+	string vowels = "aAáÁeEéÉiIíÍoOóÓôÔuUúÚyYýÝ";
+	int vowelsCountParam1 = 0;
+	int vowelsCountParam2 = 0;
+	for (auto pismeno : param1)
+	{
+		if (vowels.find(pismeno) != std::string::npos)
+		{
+			vowelsCountParam1++;
+		}
+	}
+	for (auto pismeno : param2)
+	{
+		if (vowels.find(pismeno) != std::string::npos)
+		{
+			vowelsCountParam2++;
+		}
+	}
+	
+	return vowelsCountParam1 < vowelsCountParam2;
+}
+
+
 void emplaceHierarchy() {
 	auto hierarchy = std::make_unique<ds::amt::MultiWayExplicitHierarchy<vector<string>>>();
 	auto& root = hierarchy->emplaceRoot();
@@ -204,6 +274,7 @@ void emplaceHierarchy() {
 	int userInput = 0;
 	int userInputSon;
 	int userInputALGChosen;
+	int userSortInput;
 	string userStringInput;
 	ds::amt::MultiWayExplicitHierarchyBlock<vector<string>> actualPosition = root;
 
@@ -249,10 +320,36 @@ void emplaceHierarchy() {
 		}
 		else if (userInput == 2)
 		{
+			vector<string> temp;
 			for (int i = 0; i < hierarchy->degree(actualPosition); i++)
 			{
+				temp.push_back(hierarchy->accessSon(actualPosition, i)->data_[2]);
 				cout << "Stlačte:" << " [" << i << "] " << hierarchy->accessSon(actualPosition, i)->data_[2] << endl;
 			}
+			cout << "Stlačte 1 ak chcete údaje utriediť pomocou compareAlphabetical" << endl;
+			cout << "Stlačte 2 ak chcete údaje utriediť pomocou compareVowelsCount" << endl;
+			cin >> userSortInput;
+			if (userSortInput == 1)
+			{
+				sort(temp, compareAlphabetical);
+				for (int i = 0; i < temp.size(); i++)
+				{
+					cout << temp[i] << endl;
+				}
+			}
+			else if (userSortInput ==2)
+			{
+				sort(temp, compareVowelsCount);
+				for (int i = 0; i < temp.size(); i++)
+				{
+					cout << temp[i] << endl;
+				}
+			}
+			else
+			{
+				cout << "Zadali ste zlý vstup!" << endl;
+			}
+
 			cin >> userInputSon;
 			actualPosition = *hierarchy->accessSon(actualPosition, userInputSon);
 			cout << "Nachádzaš sa na: " << actualPosition.data_[2] << endl;
@@ -574,11 +671,19 @@ void emplaceTreap() {
 		else if (userInput == 4)
 		{
 			exit(1);
+			delete &tabulkaKraje;
+			delete &tabulkaOkresy;
+			delete &tabulkaObce;
 		}
 		else
 		{
 			cout << "Nesprávne ste zadali volbu!" << endl;
 		}
+
+		//prejdi forom vsetky vector stingy t tabulkach a deletni ich potom daj delete samostatnej sabulky tak isto aj hierarchy
+		delete& tabulkaKraje;
+		delete& tabulkaOkresy;
+		delete& tabulkaObce;
 	}
 	
 }
@@ -603,8 +708,8 @@ int main()
 
  	//cout << "Stlačte 1 ak chcete prehladávať pomocou startWithStr" << endl;
 	//cout << "Stlačte 2 ak chcete prehladávať pomocou containsStr" << endl;
-	//emplaceHierarchy();
-	emplaceTreap();
+	emplaceHierarchy();
+	//emplaceTreap();
 	//dorob check na to aby slo dat iba 1 alebo 2 
 	while (!(cin >> userInput))
 	{
