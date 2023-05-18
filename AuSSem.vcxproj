@@ -132,7 +132,9 @@
     <ClCompile Include="AuSSem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AuSSem.h" />
+    <ClInclude Include="MyHierarchy.h" />
+    <ClInclude Include="MySequence.h" />
+    <ClInclude Include="MyTreap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
