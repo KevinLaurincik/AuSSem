@@ -52,14 +52,13 @@ int main()
 			hierarchy.emplaceHierarchy();
 			hierarchy.searchMenuHierarchy();
 			hierarchy.~Hierarchy();
-			//emplaceHierarchy();
-			//searchMenuHierarchy();
 		}
 		else if (userMenuInput == 3)
 		{
 			MyTreap treap;
 			treap.emplaceTreap();
 			treap.searchMenuTreap();
+			treap.~MyTreap();
 		}
 		else
 		{
