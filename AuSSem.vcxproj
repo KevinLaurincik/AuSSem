@@ -130,8 +130,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AuSSem.cpp" />
+    <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="MyHierarchy.cpp" />
+    <ClCompile Include="MySequence.cpp" />
+    <ClCompile Include="MyTreap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileReader.h" />
     <ClInclude Include="MyHierarchy.h" />
     <ClInclude Include="MySequence.h" />
     <ClInclude Include="MyTreap.h" />

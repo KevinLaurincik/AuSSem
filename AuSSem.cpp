@@ -43,17 +43,23 @@ int main()
 
 		if (userMenuInput == 1)
 		{
-			searchMenuSequence();
+			Sequence sequence;
+			sequence.searchMenuSequence();
 		}
 		else if (userMenuInput == 2)
 		{
-			emplaceHierarchy();
-			searchMenuHierarchy();
+			Hierarchy hierarchy;
+			hierarchy.emplaceHierarchy();
+			hierarchy.searchMenuHierarchy();
+			hierarchy.~Hierarchy();
+			//emplaceHierarchy();
+			//searchMenuHierarchy();
 		}
 		else if (userMenuInput == 3)
 		{
-			emplaceTreap();
-			searchMenuTreap();
+			MyTreap treap;
+			treap.emplaceTreap();
+			treap.searchMenuTreap();
 		}
 		else
 		{
