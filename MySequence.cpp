@@ -28,11 +28,24 @@ void Sequence::startWithStr(std::string userInput, std::string nazorSuboru)
     }
     file.close();
 
-    for (int i = 1; i < content.size(); i++)
+    if (nazorSuboru == "okresy.csv")
     {
-        if ((content[i][2].rfind(userInput, 0) == 0))
+        for (int i = 1; i < content.size(); i++)
         {
-            result.push_back(content[i]);
+            if ((content[i][3].rfind(userInput, 0) == 0))
+            {
+                result.push_back(content[i]);
+            }
+        }
+    }
+    else
+    {
+        for (int i = 1; i < content.size(); i++)
+        {
+            if ((content[i][2].rfind(userInput, 0) == 0))
+            {
+                result.push_back(content[i]);
+            }
         }
     }
 
@@ -136,7 +149,8 @@ void Sequence::searchMenuSequence()
         if (userInput == 1)
         {
             cout << "Zadajte reazec, ktorým sa má vyh¾adávaný výraz zaèína: " << endl;
-            cin >> stringUserInput;
+            cin.ignore();
+            getline(cin, stringUserInput);
             cout << "Nájdené kraje: " << endl << "\n";
             startWithStr(stringUserInput, "kraje.csv");
             cout << "Nájdené okresy: " << endl << "\n";
@@ -147,7 +161,8 @@ void Sequence::searchMenuSequence()
         else if (userInput == 2)
         {
             cout << "Zadajte reazec, ktorý má vyh¾adávaný výraz obsahova: " << endl;
-            cin >> stringUserInput;
+            cin.ignore();
+            getline(cin, stringUserInput);
             cout << "Nájdené kraje: " << endl << "\n";
             containsStr(stringUserInput, "kraje.csv");
             cout << "Nájdené okresy: " << endl << "\n";
