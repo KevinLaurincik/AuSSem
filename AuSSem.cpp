@@ -56,6 +56,7 @@ int main()
 		else if (userMenuInput == 3)
 		{
 			MyTreap treap;
+			treap.testInstertAndFind();
 			treap.emplaceTreap();
 			treap.searchMenuTreap();
 			treap.~MyTreap();

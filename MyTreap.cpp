@@ -1,4 +1,5 @@
 #include "MyTreap.h"
+#include <__msvc_chrono.hpp>
 
 MyTreap::MyTreap()
 {
@@ -183,6 +184,35 @@ void MyTreap::searchMenuTreap()
 			cout << "Nesprávne ste zadali volbu!" << endl;
 		}
 	}
+}
+
+void MyTreap::testInstertAndFind()
+{
+	std::ofstream TreapInsert;
+	TreapInsert.open("TreapInsert.csv");
+	std::chrono::time_point<std::chrono::high_resolution_clock> end;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	auto tabulkaTest = std::make_unique<ds::adt::Treap<int, int>>();
+	for (int i = 0; i < 10000; i++)
+	{
+		start = std::chrono::high_resolution_clock::now();
+		tabulkaTest->insert(i, i);
+		end = std::chrono::high_resolution_clock::now();
+		unsigned long long operationTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		TreapInsert << operationTime << ";" << tabulkaTest->size() << "\n";
+	}
+	TreapInsert.close();
+	std::ofstream TreapFind;
+	TreapFind.open("TreapFind.csv");
+	for (int i = 0; i < 10000; i++)
+	{
+		start = std::chrono::high_resolution_clock::now();
+		tabulkaTest->find(i);
+		end = std::chrono::high_resolution_clock::now();
+		unsigned long long operationTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		TreapFind << operationTime << ";" << tabulkaTest->size() << "\n";
+	}
+	TreapFind.close();
 }
 
 MyTreap::~MyTreap()

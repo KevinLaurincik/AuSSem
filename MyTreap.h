@@ -30,5 +30,6 @@ public:
 	MyTreap();
 	void emplaceTreap();
 	void searchMenuTreap();
+	void testInstertAndFind();
 	~MyTreap();
 };
